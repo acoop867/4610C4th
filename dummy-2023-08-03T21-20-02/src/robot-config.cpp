@@ -14,7 +14,7 @@ motor l3 = motor(PORT10, ratio6_1, true);
 motor r1 = motor(PORT3, ratio6_1, false);
 motor r2 = motor(PORT4, ratio6_1, false);
 motor r3 = motor(PORT5, ratio6_1, false);
-inertial inert = inertial(PORT8);
+inertial inert = inertial(PORT11);
 
 
 controller Controller1 = controller(primary);

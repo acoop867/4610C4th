@@ -88,33 +88,33 @@ void wings(int i) {
 
 void pid(int ang) {
   float p = ang-inert.rotation();
-  float i = 0.000001;
+  float i = 0;
   float d = ang;
   float kp;
-  if(fabs(p)<91){
-  kp = .299;
-  }
-  else{
-  kp = 0.29;
-  }
-  float kd=.17;
-  while((fabs(d)>.3||fabs(p)>5)&&fabs(p)>.5) {
+  
+  kp = .35;
+  
+  float ki=0;//.000000000000001;
+  float kd=.12;
+  while(fabs(d)>.3||fabs(p)>.6) {
     float prev = p;
     p=ang-inert.rotation();
     d=p-prev;
-
-    l1.spin(reverse,p*kp+d*kd,pct);
-    l2.spin(forward,p*kp+d*kd,pct);
-    l3.spin(forward,p*kp+d*kd,pct);
-    r1.spin(reverse,p*kp+d*kd,pct);
-    r2.spin(reverse,p*kp+d*kd,pct);
-    r3.spin(forward,p*kp+d*kd,pct);
+    if(fabs(p)<10){
+    i+=p;
+    }
+    l1.spin(forward,p*kp+d*kd+i*ki,pct);
+    l2.spin(forward,p*kp+d*kd+i*ki,pct);
+    l3.spin(forward,p*kp+d*kd+i*ki,pct);
+    r1.spin(reverse,p*kp+d*kd+i*ki,pct);
+    r2.spin(reverse,p*kp+d*kd+i*ki,pct);
+    r3.spin(reverse,p*kp+d*kd+i*ki,pct);
 
     //sl(p*kp+d*kd);
     //sr(-p*kp+-d*kd);
-    //Controller1.Screen.clearScreen();
-    //Controller1.Screen.setCursor(1,1);
-    //Controller1.Screen.print(inert.rotation());
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1,1);
+    Controller1.Screen.print(p);
     wait(10,msec);
   }
   sl(0);
@@ -411,7 +411,10 @@ void driver() {
   bool lr = false;
   bool inta = false;
   bool inta2 = false;
-  
+  bool tank = false;
+  bool test=false;
+  int timething=0;
+
   while(true) {
     if(Controller1.ButtonX.pressing()) {
       
@@ -429,26 +432,54 @@ void driver() {
       endgame.set(true);
     }
     
-    
+    if(!tank){
     l1.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
     l2.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
     l3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
     r1.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
     r2.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
     r3.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
-    // sl(Controller1.Axis3.position()+Controller1.Axis1.position());
-    // sr(Controller1.Axis3.position()-Controller1.Axis1.position());
+    }
+    else{
+      l1.spin(forward,Controller1.Axis3.position(),pct);
+      l2.spin(forward,Controller1.Axis3.position(),pct);
+      l3.spin(forward,Controller1.Axis3.position(),pct);
+      r1.spin(forward,Controller1.Axis2.position(),pct);
+      r2.spin(forward,Controller1.Axis2.position(),pct);
+      r3.spin(forward,Controller1.Axis2.position(),pct);
+    }
     
+    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()){
+      wingL.set(false);
+      wingR.set(false);
+      timething++;
+      if(lift.value()){
+        lift.set(false);
+        if(timething>25) {
+        endgame.set(true);
+        }
+      }
+      else{
+        lift.set(true);
+        if(timething>25) {
+          lift.set(false);
+          endgame.set(true);
+        }
+      }
+    }
     
-    
-    
+    if(Controller1.ButtonRight.pressing()&&Controller1.ButtonLeft.pressing()&&Controller1.ButtonDown.pressing()&&Controller1.ButtonUp.pressing()&&Controller1.ButtonA.pressing()&&Controller1.ButtonB.pressing()&&Controller1.ButtonX.pressing()&&Controller1.ButtonY.pressing()){
+      tank = true;
+    }
     
       
-      
+    if(Controller1.ButtonA.pressing()&&Controller1.ButtonB.pressing()&&Controller1.ButtonX.pressing()&&Controller1.ButtonY.pressing()){
+      test=true;
+    }
       
     
     
-    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()&&inta==false) {
+    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()&&inta==false&&!(Controller1.ButtonL2.pressing()&&Controller1.ButtonR2.pressing())) {
         bwing.set(!bwing.value());
         
         inta=true;
@@ -473,29 +504,20 @@ void driver() {
       Intake.stop(hold);
     }
 
-    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()) {
-      if(n&&!z) {
-        n=false;
-      }
-      else if(!n&&!z) {
-        n=true;
-      }
-      //arms.set(n);
-      z=true;
-    }
-    if(!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()) {
-      z=false;
-    }
+    
 
     
 
-    if(Controller1.ButtonR2.pressing()) {
+    if(Controller1.ButtonR2.pressing()&&!Controller1.ButtonR1.pressing()&&!Controller1.ButtonL1.pressing()) {
       
       if(t&&m==false) {
         t=false;
       }
       else if(!t&&m==false) {
         t=true;
+      }
+      if(m==false&&(wingL.value()||wingR.value())){
+        t=false;
       }
       wingL.set(t);
       wingR.set(t);
@@ -508,14 +530,12 @@ void driver() {
 
      if(Controller1.ButtonY.pressing()) {
       
-      if(l&&lr==false) {
-        l=false;
+      
+      if(lr==false){
+        wingR.set(!wingR.value());
       }
-      else if(!l&&lr==false) {
-        l=true;
-      }
-      wingL.set(0);
-      wingR.set(l);
+      
+      
       lr=true;
     }
     if(!Controller1.ButtonY.pressing()) {
@@ -523,14 +543,12 @@ void driver() {
     }
     if(Controller1.ButtonA.pressing()) {
       
-      if(r&&rr==false) {
-        r=false;
+      
+
+      if(rr==false){
+      wingL.set(!wingL.value());
       }
-      else if(!r&&rr==false) {
-        r=true;
-      }
-      wingL.set(r);
-      wingR.set(0);
+      
       rr=true;
     }
     if(!Controller1.ButtonA.pressing()) {
@@ -609,57 +627,7 @@ void db(int degs){
 
 
 
-void autonoffense2() {
-    intin();
-  pidd(200,0);
-  pidd(-1500,0);
-  pidswingl(-45);
-  bwing.set(true);
-  pidd(-800,-45);
-  pid(-90);
-  bwing.set(false);
-  pid(90);
-  wingL.set(true);
-  inout();
-  pidd(600,90);
-  wingL.set(false);
-  pidd(-800,90);
-  intstop();
-  pid(160);
-  pidd(-700,160);
-  pid(180);
-  pidd(-1400,180);
 
-}
-
-void autonoffense3() {
-  intin();
-  pidd(200,0);
-  pidd(-1500,0);
-  pidswingl(-45);
-  bwing.set(true);
-  pidd(-800,-45);
-  pid(-90);
-  bwing.set(false);
-  pid(90);
-  wingL.set(true);
-  inout();
-  pidd(600,90);
-  wingL.set(false);
-  pidd(-400,90);
-  intstop();
-  pid(15);
-  intin();
-  pidd(2100,15);
-  intstop();
-  pidd(-200,10);
-  pid(90);
-  pidd(600,90);
-  wingR.set(true);
-  pidswingl(180);
-  inout();
-  pidd(900,180);
-}
 
 int wingin() {
   wait(.4,sec);
@@ -668,215 +636,25 @@ int wingin() {
   return 0;
 }
 
-void autonoffense() {
-  wingL.set(true);
-  intin();
-  thread t (wingin);
-  pidd(2900,0,1400);
-  
-  intstop();
-  
-  pid(135,670);
-  
-  inout();
-  
-  pidd(1300,135,1100);
-  
-  pidd(-300,135,500);
-  
-  intstop();
-  pid(-110,800);
-  intin();
-  pidd(1300,-70,1050);
-  intstop();
-  pid(-195,600);
-  pidd(2100,-190,1300);
-  pidswingl(-90);
-  bwing.set(true);
-  pid(-135,500);
-  bwing.set(false);
-  pid(-300);
-  inout();
-  wait(.4,sec);
-  pid(-120);
-  bwing.set(true);
-  pidd(-1000,-135);
 
-}
-
-void autond1() {
-  thread t(distin);
-  pidd(400,0);
-  bwing.set(true);
+void autodefensewp(){
   pidd(-200,0);
-  
-  pidswingl(-15);
-  bwing.set(false);
-  pidswingl(-30);
-  pidswingl(-20);
-  
-  pidd(-600,-25);
+  wingL.set(true);
+  pidd(200,0);
   pid(-45);
-  pidd(-1500,-45);
-}
-
-void auton() {
-  pidd(-1600,0,50);
-  
-  
-  pidswingl(-91);
-  pidd(-200,-90);
-  wingR.set(true);
-  pidd(1400,-90);
-}
-
-void skills() {
-  pidswingr(45);
-  pidd(-400,45);
-  pidswingl(-20);
-  pidd(1600,-20);
-  pid(-90);
-  pidd(1700,-90);
-  pid(0);
-  pidd(2000,0);
-
-  pidd(2000,0);
-
-  pidswingl(-50);
-  pidd(-1300,-50);
-  pid(0);
-
-  pidd(800,0);
-  
-  pidd(-400,0);
-  pid(180);
-  pidd(2800,180);
-  pid(135);
-  pidd(2500,135);
-  pid(0);
-  pidd(-700,0);
-  pid(-20);
-  pidd(1800,-20);
-}
-
-void skills1(){
-  pidswingr(45);
-  pidd(-300,45);
-  pidswingr(80);
-  pidd(-900,90);
-  pidd(700,90);
-  pid(-20);
-  bwing.set(true);
-
-
-  wait(.5,sec);
-  bwing.set(false);
-  pid(45);
-  pidd(800,45);
-  pid(0);
-  //pidd(3500,0);
-}
-
-void skillssafe() {
-  bwing.set(true);
-  bwing.set(true);
-  cata.spin(forward,100,pct);
-}
-
-
-void defenseautoawpsafe() {
-  Intake.spin(forward,100,pct);
-  wingR.set(true);
-  bwing.set(true);
-  wait(.1,sec);
   wingR.set(false);
-  intstop();
-  wait(.3,sec);
-  pid(-45);
-  //pidd(300,-45);
-  //pidd(-300,-45);
-  pidd(100,-45);
-  bwing.set(false);
-  pidd(-400,-45);
-  pidswingl(-85);
-  pidd(-1600,-90);
-  pidd(80,-90);
-}
-
-void defenseautoelim() {
-  intin();
-  wingR.set(true);
-  thread t(wingin);
-  pidd(2100,0);
-  pidd(-300,0);
-  intstop();
-  pid(78);
-  wingR.set(true);
-  pidd(1100,80);
-  pidd(-200,80);
-  wingR.set(false);
-  pidswingl(30);
-  pidd(-1800,45);
-
-  
-
-  pid(150);
-  pidd(800,135);
-  pid(80);
-  inout();
-  pidd(1100,90);
-  pidd(-2000,90);
-  lift.set(true);
-  bwing.set(true);
-}
-
-void defenseautounsafe() {
-  intin();
-  wingR.set(true);
-  thread t(wingin);
-  pidd(2200,0);
-  pidd(-300,0);
-  intstop();
-  pid(78);
-  wingR.set(true);
-  pidd(1100,80);
-  pidd(-200,80);
-  wingR.set(false);
-  pidswingl(30);
-  pidd(-2200,30);
-
-  pidswingl(-60);
-  bwing.set(true);
-  pidd(-600,-60);
-  pid(-100);
-  bwing.set(false);
-  pidd(-1500,-110);
-
-  
+  pidd(1400,-45);
 }
 
 void autonomousprogram() {
-  if(select == 1) {
-    
-    defenseautoawpsafe();
-  }
-  if(select==2) {
-    defenseautoelim();
-
-  }
-  if(select==3){
-    autonoffense();
-  }
-  if(select==4){
-    skills();
-  }
-  if(select==5){
-    skillssafe();
-  }
+  autodefensewp();
 }
+
+
+
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(autonoffense);
+   Comp.autonomous(autonomousprogram);
    Comp.drivercontrol(driver);
 
   pre();
