@@ -357,7 +357,7 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
 
 int catathing(){
   while(true) {
-    if(Controller1.ButtonL2.pressing()) {
+    if(Controller1.ButtonL2.pressing()&&!Controller1.ButtonL1.pressing()) {
       cata.spin(forward,12,volt);
     }
     else {
@@ -452,20 +452,14 @@ void driver() {
     if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()){
       wingL.set(false);
       wingR.set(false);
-      timething++;
+      bwing.set(false);
       if(lift.value()){
         lift.set(false);
-        if(timething>25) {
+         
         endgame.set(true);
-        }
+        
       }
-      else{
-        lift.set(true);
-        if(timething>25) {
-          lift.set(false);
-          endgame.set(true);
-        }
-      }
+      
     }
     
     if(Controller1.ButtonRight.pressing()&&Controller1.ButtonLeft.pressing()&&Controller1.ButtonDown.pressing()&&Controller1.ButtonUp.pressing()&&Controller1.ButtonA.pressing()&&Controller1.ButtonB.pressing()&&Controller1.ButtonX.pressing()&&Controller1.ButtonY.pressing()){
