@@ -125,14 +125,9 @@ void pid(int ang,int timeout) {
   float p = ang-inert.rotation();
   float i = 0.000001;
   float d = ang;
-  float kp;
-  if(fabs(p)<91){
-  kp = .299;
-  }
-  else{
-  kp = 0.29;
-  }
-  float kd=.17;
+  float kp=.35;
+  
+  float kd=.12;
   int t=0;
   while((fabs(d)>.3||fabs(p)>5)&&fabs(p)>.5&&t<timeout) {
     t+=10;
@@ -140,12 +135,12 @@ void pid(int ang,int timeout) {
     p=ang-inert.rotation();
     d=p-prev;
 
-    l1.spin(reverse,p*kp+d*kd,pct);
+    l1.spin(forward,p*kp+d*kd,pct);
     l2.spin(forward,p*kp+d*kd,pct);
     l3.spin(forward,p*kp+d*kd,pct);
     r1.spin(reverse,p*kp+d*kd,pct);
     r2.spin(reverse,p*kp+d*kd,pct);
-    r3.spin(forward,p*kp+d*kd,pct);
+    r3.spin(reverse,p*kp+d*kd,pct);
 
     //sl(p*kp+d*kd);
     //sr(-p*kp+-d*kd);
@@ -632,16 +627,49 @@ int wingin() {
 
 
 void autodefensewp(){
-  pidd(-200,0);
+  pidd(-300,0);
   wingL.set(true);
   pidd(200,0);
-  pid(-45);
+  pid(-45,600);
   wingR.set(false);
-  pidd(1400,-45);
+  wingL.set(false);
+  pid(-15,600);
+  pidd(800,-15);
+  pid(-45,600);
+  inout();
+  pidd(15300,-45);
+}
+
+void autooffenseawp(){
+  intin();
+  pidd(200,0,200);
+  pidd(-1500,0);
+  intstop();
+  pid(-30,300);
+  pidd(-500,-30);
+  pidd(200,-30,300);
+  pid(160,900);
+  pidd(300,160);
+  pid(135,400);
+  wingL.set(true);
+  pidd(300,135);
+  pid(90,500);
+  wingL.set(false);
+  inout();
+  wait(.3,sec);
+  pid(-60,700);
+  intstop();
+  bwing.set(true);
+  pidd(-1000,-70,700);
+  
+  pid(-90,300);
+  pidd(400,-90);
+  db(-600);
+  bwing.set(false);
 }
 
 void autonomousprogram() {
-  autodefensewp();
+  autooffenseawp();
 }
 
 
