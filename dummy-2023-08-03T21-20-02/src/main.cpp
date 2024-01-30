@@ -421,11 +421,7 @@ void driver() {
       lift.set(false);
       bwing.set(false);
     }
-    if(Controller1.ButtonDown.pressing()&&Controller1.ButtonLeft.pressing()) {
-      
-      
-      endgame.set(true);
-    }
+    
     
     if(!tank){
     l1.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
@@ -664,8 +660,13 @@ void autooffenseawp(){
   
   pid(-90,300);
   pidd(400,-90);
-  db(-600);
+  pidd(-600,-90,600);
+  pidd(400,-90,300);
   bwing.set(false);
+  pid(0,600);
+  pidd(1000,0,800);
+  wingL.set(true);
+  pidd(600,0,500);
 }
 
 void autonomousprogram() {
