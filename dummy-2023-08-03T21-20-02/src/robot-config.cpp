@@ -18,7 +18,7 @@ inertial inert = inertial(PORT11);
 
 
 controller Controller1 = controller(primary);
-motor Intake = motor(PORT7, ratio18_1, false);
+motor Intake = motor(PORT20, ratio18_1, false);
 motor cata = motor(PORT21, ratio18_1, true);
 
 

@@ -640,7 +640,7 @@ void autooffenseawp(){
   intin();
   pidd(200,0,200);
   pidd(-1500,0);
-  intstop();
+  
   pid(-30,300);
   pidd(-500,-30);
   pidd(200,-30,300);
@@ -664,13 +664,43 @@ void autooffenseawp(){
   pidd(400,-90,300);
   bwing.set(false);
   pid(0,600);
-  pidd(1000,0,800);
-  wingL.set(true);
-  pidd(600,0,500);
+  pid(0,500);
+  pidd(1500,0,800);
+  wingR.set(true);
+  pidd(-1000,0,500);
+  pidd(400,45);
+}
+
+void skills(){
+  
+  pidd(-600,-45);
+  pid(-60,500);
+  wait(2,sec);
+  pid(40,400);
+  pidd(-1000,45,700);
+  pidd(400,45);
+  pid(-45,500);
+  pidd(1500,-45);
+  pid(-135,500);
+  intin();
+  pidd(2300,-135);
+  pid(-45,500);
+  wings(3);
+  pidd(2000,-45);
+  pidd(2000,-45,1000);
+  wingL.set(false);
+  wingR.set(false);
+  pid(-45,300);
+  pidd(-1000,-45);
+  pid(-135);
+  pidd(-1100,-135);
+  pid(-45);
+  wings(3);
+  pidd(1000,-45);
 }
 
 void autonomousprogram() {
-  autooffenseawp();
+  skills();
 }
 
 
