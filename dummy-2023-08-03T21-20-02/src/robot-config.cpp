@@ -25,7 +25,7 @@ motor cata = motor(PORT21, ratio18_1, true);
 digital_out wingR = digital_out(Brain.ThreeWirePort.D);
 digital_out wingL = digital_out(Brain.ThreeWirePort.E);
 digital_out bwing = digital_out(Brain.ThreeWirePort.G);
-
+digital_out bwingl = digital_out(Brain.ThreeWirePort.H);
 digital_out endgame = digital_out(Brain.ThreeWirePort.C);
 digital_out lift = digital_out(Brain.ThreeWirePort.F);
 

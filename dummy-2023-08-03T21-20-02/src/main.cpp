@@ -129,7 +129,7 @@ void pid(int ang,int timeout) {
   
   float kd=.12;
   int t=0;
-  while((fabs(d)>.3||fabs(p)>5)&&fabs(p)>.5&&t<timeout) {
+  while((fabs(d)>.3||fabs(p)>.3)&&t<timeout) {
     t+=10;
     float prev = p;
     p=ang-inert.rotation();
@@ -393,6 +393,16 @@ int catathing(){
 }
 }
 }*/
+int select=1;
+void driver_auto(){
+  pidd(-600,0);
+  pid(-61,1400);
+  pidd(-50,-61,400);
+  pid(-61,400);
+  bwing.set(true);
+  cata.spin(forward,100,pct);
+  wait(5,seconds);
+}
 
 void driver() {
   thread th(catathing);
@@ -409,7 +419,9 @@ void driver() {
   bool tank = false;
   bool test=false;
   int timething=0;
-
+  if(select==5){
+    driver_auto();
+  }
   while(true) {
     if(Controller1.ButtonX.pressing()) {
       
@@ -443,7 +455,7 @@ void driver() {
     if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()){
       wingL.set(false);
       wingR.set(false);
-      bwing.set(false);
+      bwing.set(true);
       if(lift.value()){
         lift.set(false);
          
@@ -560,15 +572,24 @@ void intstop() {
   Intake.stop(hold);
 }
 competition Comp;
-int select=1;
+
 int psel;
 void pre() {
   inert.calibrate();
+  Brain.Screen.setCursor(1, 1);
+  Brain.Screen.print("Defense awp");
+
+  while(true){//!Comp.isAutonomous()) {
+
+  if(Controller1.ButtonUp.pressing()){
+    select++;
+    while(Controller1.ButtonUp.pressing()){
+      wait(.1,sec);
+      Brain.Screen.clearScreen();
+    }
   
-  while(!Comp.isAutonomous()) {
-    
   
-  if(!(select==psel)) {
+  
   Brain.Screen.clearScreen();
   Brain.Screen.setCursor(1, 1);
   
@@ -585,11 +606,11 @@ void pre() {
     Brain.Screen.print("skills");
   }
   if(select==5) {
-    Brain.Screen.print("skills safe");
+    Brain.Screen.print("skills driver");
+  
   }
-  }
-  psel=select;
-}
+  
+}}
 }
 void db(int degs){
   double ang= inert.rotation();
@@ -633,7 +654,7 @@ void autodefensewp(){
   pidd(800,-15);
   pid(-45,600);
   inout();
-  pidd(15300,-45);
+  pidd(1300,-45);
 }
 
 void autooffenseawp(){
@@ -660,15 +681,16 @@ void autooffenseawp(){
   
   pid(-90,300);
   pidd(400,-90);
+  bwing.set(false);
   pidd(-600,-90,600);
   pidd(400,-90,300);
-  bwing.set(false);
+  
   pid(0,600);
   pid(0,500);
   pidd(1500,0,800);
   wingR.set(true);
-  pidd(-1000,0,500);
-  pidd(400,45);
+  
+  pidd(1200,45);
 }
 
 void skills(){
@@ -699,8 +721,116 @@ void skills(){
   pidd(1000,-45);
 }
 
+void disrupt(){
+  intin();
+  pidd(2300,0);
+  pidd(-200,0);
+  pid(80,600);
+  wingR.set(true);
+  inout();
+  pidd(1000,80);
+  wingR.set(false);
+  pidd(-200,80);
+  pid(30,500);
+  pidd(-2800,30);
+  pid(80,600);
+  pidd(1600,80);
+  pid(110);
+  pidd(-2000,110);
+  pid(56);
+  bwing.set(true);
+  // pid(50);
+  // bwing.set(true);
+}
+
+int brainread(){
+  while (true){
+    Brain.Screen.clearScreen();
+    Brain.Screen.setCursor(2, 1);
+    Brain.Screen.print(inert.rotation());
+    wait(.1,sec);
+  }
+  return 0;
+}
+
+void skills2(){
+  //thread t(brainread);
+  pidd(-600,45);
+  pid(40,600);
+  pidd(-300,40);
+  pidd(300,45);
+  pid(-61,1500);
+  pid(-61,200);
+  pidd(-50,-48);
+  pid(-61,200);
+  bwing.set(true);
+  cata.spin(forward,100,pct);
+  wait(3,sec);
+  cata.stop();
+  bwing.set(false);
+  pidd(200,-60);
+  pid(30,700);
+  pidd(-1000,45,700);
+  pidd(100,45);
+  pid(0,700);
+  pidd(1800,0);
+  pid(-45,700);
+  pidd(3600,-45);
+  pid(-90,500);
+  pidd(500,-90);
+  pidd(-500,-90);
+  pid(90,500);
+  pidd(-800,90);
+  pid(52,500);
+  
+  pidd(-1000,45,800);
+  pid(45,200);
+  pidd(500,45);
+  pidd(-500,45);
+  pidd(300,45);
+  pid(135,700);
+  pidd(2000,135);
+  pid(225,700);
+  pidd(600,225);
+  wingL.set(true);
+  wingR.set(true);
+  pid(315,600);
+  pidd(1000,270);
+  wingL.set(false);
+  wingR.set(false);
+  pid(315,500);
+  pidd(-1000,315);
+  pid(225,500);
+  pidd(1000,225);
+  pid(315,700);
+  wingL.set(true);
+  wingR.set(true);
+  pidd(1600,315,1000);
+  
+  wingL.set(false);
+  wingR.set(false);
+  pidd(-900,300);
+  wingL.set(true);
+  wingR.set(true);
+  pidd(1600,315,1000);
+}
+
+
+
 void autonomousprogram() {
-  skills();
+
+  if(select==1){
+    autodefensewp();
+  }
+  if(select==2){
+    disrupt();
+  }
+  if(select==3){
+    autooffenseawp();
+  }
+  if(select==4||select==5){
+    skills2();
+  }
 }
 
 

@@ -22,7 +22,7 @@ extern motor cata;
 extern digital_out wingR;
 extern digital_out wingL;
 extern digital_out bwing;
-
+extern digital_out bwingl;
 extern digital_out endgame;
 extern digital_out lift;
 
