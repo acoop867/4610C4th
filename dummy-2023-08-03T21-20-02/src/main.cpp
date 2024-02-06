@@ -529,7 +529,7 @@ void driver() {
       
       
       if(lr==false){
-        wingR.set(!wingR.value());
+        wingL.set(!wingL.value());
       }
       
       
@@ -543,7 +543,7 @@ void driver() {
       
 
       if(rr==false){
-      wingL.set(!wingL.value());
+      wingR.set(!wingR.value());
       }
       
       rr=true;
@@ -632,7 +632,9 @@ void db(int degs){
 }
 
 
+void drive(int lspeed,int rspeed) {
 
+}
 
 
 int wingin() {
@@ -644,17 +646,18 @@ int wingin() {
 
 
 void autodefensewp(){
-  pidd(-300,0);
   wingL.set(true);
-  pidd(200,0);
-  pid(-45,600);
-  wingR.set(false);
+  
+  bwingl.set(true);
+  wait(.3,sec);
   wingL.set(false);
-  pid(-15,600);
-  pidd(800,-15);
-  pid(-45,600);
-  inout();
-  pidd(1300,-45);
+  wait(.5,sec);
+  pid(-80,800);
+  bwingl.set(false);
+  pidd(-1000,-80);
+  pid(-90,400);
+  pidd(-900,-80);
+  pidd(100,-90);
 }
 
 void autooffenseawp(){
