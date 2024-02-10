@@ -352,7 +352,7 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
 
 int catathing(){
   while(true) {
-    if(Controller1.ButtonL2.pressing()&&!Controller1.ButtonL1.pressing()) {
+    if(Controller1.ButtonL2.pressing()&&(!Controller1.ButtonR2.pressing()&&!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing())) {
       cata.spin(forward,12,volt);
     }
     else {
@@ -378,21 +378,24 @@ int catathing(){
   return 0;
 }
 
-/*void cataauto() {
+void cataauto() {
   int times=0;
+  int tim=0;
   cata.spin(forward,12,volt);
-  while(times<44){
-  if(di.objectDistance(inches)<2) {
+  while(times<44&&tim<30000){
+  if(di.hue()>=50) {
       times++;
-      while(di.objectDistance(inches)<2){
+      while(di.hue()>=50){
       wait(10,msec);
+      tim+=10;
       }
   }
+  wait(10,msec);
+  tim+=10;
   }
   cata.stop();
 }
-}
-}*/
+
 int select=1;
 void driver_auto(){
   pidd(-600,0);
@@ -403,6 +406,16 @@ void driver_auto(){
   cata.spin(forward,100,pct);
   wait(5,seconds);
 }
+
+int timething=0;
+int timerend(){
+  while(timething<800) {
+    timething+=10;
+    wait(10,msec);
+  }
+  return 0;
+}
+
 
 void driver() {
   thread th(catathing);
@@ -418,20 +431,31 @@ void driver() {
   bool inta2 = false;
   bool tank = false;
   bool test=false;
-  int timething=0;
+  
+  int toggle= 0;
+  bool end=false;
+  bool lifttog=false;
+  bool side=false;
+  bool enddone=false;
   if(select==5){
     driver_auto();
   }
   while(true) {
-    if(Controller1.ButtonX.pressing()) {
-      
-      lift.set(true);
+    if(Controller1.ButtonX.pressing()&&!lifttog) {
+      lifttog=true;
+      lift.set(!lift.value());
       bwing.set(true);
     }
-    if(Controller1.ButtonB.pressing()) {
+    
+    if(Controller1.ButtonB.pressing()&&!lifttog) {
       
-      lift.set(false);
-      bwing.set(false);
+      lift.set(!lift.value());
+      lifttog=true;
+      toggle=0;
+    }
+
+    if(!Controller1.ButtonX.pressing()&&!Controller1.ButtonB.pressing()){
+      lifttog=false;
     }
     
     
@@ -452,18 +476,48 @@ void driver() {
       r3.spin(forward,Controller1.Axis2.position(),pct);
     }
     
-    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()){
+    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()&&!end){
+      
       wingL.set(false);
       wingR.set(false);
-      bwing.set(true);
-      if(lift.value()){
+      enddone=true;
+      end=true;
+      
+      
+        lift.set(true);
+        toggle=1;
+      
+      
+    }
+    if(!(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing())){
+      end=false;
+    }
+    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&toggle==1&&!end){
+    if(lift.value()){
         lift.set(false);
          
         endgame.set(true);
         
+          bwingl.set(true);
+        }
+        
+        
       }
-      
-    }
+
+    if(Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()&&toggle==1&&!end){
+    if(lift.value()){
+        lift.set(false);
+         
+        endgame.set(true);
+        
+          bwing.set(true);
+        }
+        
+        
+      }
+    
+
+    
     
     if(Controller1.ButtonRight.pressing()&&Controller1.ButtonLeft.pressing()&&Controller1.ButtonDown.pressing()&&Controller1.ButtonUp.pressing()&&Controller1.ButtonA.pressing()&&Controller1.ButtonB.pressing()&&Controller1.ButtonX.pressing()&&Controller1.ButtonY.pressing()){
       tank = true;
@@ -490,22 +544,24 @@ void driver() {
       inta2=false;
     }
     
+    if(!toggle){
     if(Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()) {
       Intake.spin(forward,100,pct);
     }
     else if(Controller1.ButtonR1.pressing()&&!Controller1.ButtonL1.pressing()) {
       Intake.spin(reverse,100,pct);
     }
-    
     else{
       Intake.stop(hold);
     }
-
+    }
     
 
     
 
-    if(Controller1.ButtonR2.pressing()&&!Controller1.ButtonR1.pressing()&&!Controller1.ButtonL1.pressing()) {
+    
+
+    if(Controller1.ButtonR2.pressing()&&!Controller1.ButtonR1.pressing()&&!Controller1.ButtonL1.pressing()&&!toggle) {
       
       if(t&&m==false) {
         t=false;
@@ -758,17 +814,18 @@ int brainread(){
 
 void skills2(){
   //thread t(brainread);
+  bwingl.set(true);
   pidd(-600,45);
-  pid(40,600);
-  pidd(-300,40);
-  pidd(300,45);
+  // pid(40,600);
+  // pidd(-300,40);
+  // pidd(300,45);
+  bwingl.set(false);
   pid(-61,1500);
   pid(-61,200);
-  pidd(-50,-48);
-  pid(-61,200);
+  
   bwing.set(true);
-  cata.spin(forward,100,pct);
-  wait(3,sec);
+  cataauto();
+  
   cata.stop();
   bwing.set(false);
   pidd(200,-60);
@@ -794,11 +851,12 @@ void skills2(){
   pid(135,700);
   pidd(2000,135);
   pid(225,700);
-  pidd(600,225);
+  pidd(700,225);
+  pid(300,600);
   wingL.set(true);
   wingR.set(true);
-  pid(315,600);
-  pidd(1000,270);
+  
+  pidd(1200,270,1000);
   wingL.set(false);
   wingR.set(false);
   pid(315,500);
@@ -812,7 +870,9 @@ void skills2(){
   
   wingL.set(false);
   wingR.set(false);
+  pid(330,500);
   pidd(-900,300);
+  pid(315,300);
   wingL.set(true);
   wingR.set(true);
   pidd(1600,315,1000);

@@ -28,7 +28,7 @@ digital_out bwing = digital_out(Brain.ThreeWirePort.G);
 digital_out bwingl = digital_out(Brain.ThreeWirePort.H);
 digital_out endgame = digital_out(Brain.ThreeWirePort.C);
 digital_out lift = digital_out(Brain.ThreeWirePort.F);
-
+optical di= optical(PORT19);
 
 
 // VEXcode generated functions

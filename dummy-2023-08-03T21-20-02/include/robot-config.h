@@ -17,7 +17,7 @@ extern inertial inert;
 extern controller Controller1;
 extern motor Intake;
 extern motor cata;
-
+extern optical di;
 
 extern digital_out wingR;
 extern digital_out wingL;
