@@ -718,38 +718,25 @@ void autodefensewp(){
 
 void autooffenseawp(){
   intin();
-  pidd(200,0,200);
-  pidd(-1500,0);
-  
-  pid(-30,300);
-  pidd(-500,-30);
-  pidd(200,-30,300);
-  pid(160,900);
-  pidd(300,160);
-  pid(135,400);
-  wingL.set(true);
-  pidd(300,135);
-  pid(90,500);
-  wingL.set(false);
+  pidd(3000,0,4000);
+  pid(120,600);
+  inout();
+  wingR.set(true);
+  pidd(1600,120,1000);
+  wingR.set(false);
+
+  pidd(-400,120);
+  pid(270,700);
+  intin();
+  pidd(1200,270,900);
+  pid(160,500);
+  pidd(1400,160,900);
   inout();
   wait(.3,sec);
-  pid(-60,700);
-  intstop();
-  bwing.set(true);
-  pidd(-1000,-70,700);
+  pid(210,700);
+  pidd(1200,210,900);
+  pid(300,800);
   
-  pid(-90,300);
-  pidd(400,-90);
-  bwing.set(false);
-  pidd(-600,-90,600);
-  pidd(400,-90,300);
-  
-  pid(0,600);
-  pid(0,500);
-  pidd(1500,0,800);
-  wingR.set(true);
-  
-  pidd(1200,45);
 }
 
 void skills(){
