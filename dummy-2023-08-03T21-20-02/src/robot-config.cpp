@@ -19,7 +19,8 @@ inertial inert = inertial(PORT11);
 
 controller Controller1 = controller(primary);
 motor Intake = motor(PORT20, ratio18_1, false);
-motor cata = motor(PORT21, ratio18_1, true);
+motor cata = motor(PORT19, ratio18_1, true);
+motor cata2 = motor(PORT16,ratio18_1);
 
 
 digital_out wingR = digital_out(Brain.ThreeWirePort.D);
@@ -28,7 +29,7 @@ digital_out bwing = digital_out(Brain.ThreeWirePort.G);
 digital_out bwingl = digital_out(Brain.ThreeWirePort.H);
 digital_out endgame = digital_out(Brain.ThreeWirePort.C);
 digital_out lift = digital_out(Brain.ThreeWirePort.F);
-optical di= optical(PORT19);
+optical di= optical(PORT21);
 
 
 // VEXcode generated functions
