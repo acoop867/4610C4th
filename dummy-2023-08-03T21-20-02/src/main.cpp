@@ -315,6 +315,62 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5&&t<timeout) {
   sr(0);
 }
 
+int ang1=0;
+int dist1=0;
+
+int actang;
+int change(){
+  while(abs((li()+ri())/2)<dist1){
+    wait(10,msec);
+  }
+  actang=ang1;
+  return 0;
+}
+
+void changeangle(int dist,int ang){
+ang1= ang;
+dist1=dist;
+thread m(change);
+}
+
+void pidd(int dist, int ang,int timeout,int maxspeed) {
+  l1.resetPosition();
+  l2.resetPosition();
+  l3.resetPosition();
+  r1.resetPosition();
+  r2.resetPosition();
+  r3.resetPosition();
+double kp=.08;
+
+actang=ang;
+double kd = 0.11;
+//dist=dist*4*3.25*3.14159/(5*360);
+float p = dist;
+float d=dist;
+
+double kap = .2;
+double t =0;
+while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5&&t<timeout) {
+    float prev = p;
+    p=dist-(li()+ri())/2;
+    d=p-prev;
+    t+=10;
+    float ap = ang-inert.rotation();
+    int pow = p*kp+d*kd;
+    if(fabs(ap)>3&&pow>maxspeed){
+      pow=maxspeed;
+    }
+    sl(pow+ap*kap);
+    sr(pow-ap*kap);
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(kp);
+    wait(10,msec);
+  }
+  sl(0);
+  sr(0);
+}
+
 void arc(int dist, int ang) {
   l1.resetPosition();
   l2.resetPosition();
@@ -353,8 +409,8 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
 int catathing(){
   while(true) {
     if(Controller1.ButtonL2.pressing()&&(!Controller1.ButtonR2.pressing()&&!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing())) {
-      cata.spin(forward,12,volt);
-      cata2.spin(forward,12,volt);
+      cata.spin(forward,12*85/100,volt);
+      cata2.spin(forward,12*85/100,volt);
     }
     else {
     cata.stop();
@@ -383,8 +439,8 @@ int catathing(){
 void cataauto() {
   int times=0;
   int tim=0;
-  cata.spin(forward,12,volt);
-  cata2.spin(forward,12,volt);
+  cata.spin(forward,12*85/100,volt);
+  cata2.spin(forward,12*85/100,volt);
   while(times<44&&tim<30000){
   if(di.hue()>=50) {
       times++;
