@@ -428,9 +428,10 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
   sl(0);
   sr(0);
 }
-
+competition Comp;
 int catathing(){
   while(true) {
+    if(Comp.isDriverControl()){
     if(Controller1.ButtonL2.pressing()&&(!Controller1.ButtonR2.pressing()&&!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing())) {
       cata.spin(forward,12*85/100,volt);
       cata2.spin(forward,12*85/100,volt);
@@ -438,6 +439,7 @@ int catathing(){
     else {
     cata.stop();
     cata2.stop();
+    }
     }
     /*if(cata.torque()>.1) {
       cata.setPosition(0, deg);
@@ -462,8 +464,8 @@ int catathing(){
 void cataauto() {
   int times=0;
   int tim=0;
-  cata.spin(forward,12*85/100,volt);
-  cata2.spin(forward,12*85/100,volt);
+  cata.spin(forward,85,pct);
+  cata2.spin(forward,85,pct);
   while(times<44&&tim<30000){
   if(di.hue()>=50) {
       times++;
@@ -471,6 +473,8 @@ void cataauto() {
       wait(10,msec);
       tim+=10;
       }
+      Brain.Screen.clearScreen();
+
   }
   wait(10,msec);
   tim+=10;
@@ -723,7 +727,7 @@ int distin() {
 void intstop() {
   Intake.stop(hold);
 }
-competition Comp;
+
 
 int psel;
 void pre() {
@@ -925,7 +929,13 @@ void skills2(){
   pid(-61,200);
   
   bwing.set(true);
-  cataauto();
+  cata.spin(forward,85,pct);
+  cata2.spin(forward,85,pct);
+
+  wait(25.5,sec);
+
+  cata.stop();
+  cata2.stop();
   
   cata.stop();
   bwing.set(false);
@@ -963,7 +973,7 @@ void skills2(){
   pid(315,500);
   pidd(-1000,315);
   pid(225,500);
-  pidd(1000,225);
+  pidd(1500,225);
   pid(315,700);
   wingL.set(true);
   wingR.set(true);
@@ -971,7 +981,7 @@ void skills2(){
   
   wingL.set(false);
   wingR.set(false);
-  pid(340,500);
+  pid(290,500);
   pidd(-900,300);
   pid(315,300);
   wingL.set(true);
@@ -984,7 +994,7 @@ void skills2(){
 void autonomousprogram() {
   
   if(select==1){
-    skills();//autodefensewp();
+    autodefensewp();//autodefensewp();
   }
   if(select==2){
     disrupt();
