@@ -433,8 +433,8 @@ int catathing(){
   while(true) {
     if(Comp.isDriverControl()){
     if(Controller1.ButtonL2.pressing()&&(!Controller1.ButtonR2.pressing()&&!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing())) {
-      cata.spin(forward,12*85/100,volt);
-      cata2.spin(forward,12*85/100,volt);
+      cata.spin(forward,90,pct);
+      cata2.spin(forward,90,pct);
     }
     else {
     cata.stop();
@@ -464,16 +464,16 @@ int catathing(){
 void cataauto() {
   int times=0;
   int tim=0;
-  cata.spin(forward,85,pct);
-  cata2.spin(forward,85,pct);
+  cata.spin(forward,90,pct);
+  cata2.spin(forward,90,pct);
   while(times<44&&tim<30000){
-  if(di.hue()>=50) {
+  if(di.hue()>=90) {
       times++;
-      while(di.hue()>=50){
+      while(di.hue()>=90){
       wait(10,msec);
       tim+=10;
       }
-      Brain.Screen.clearScreen();
+      
 
   }
   wait(10,msec);
@@ -630,12 +630,12 @@ void driver() {
         inta=false;
       }
 
-    if(Controller1.ButtonL2.pressing()&&Controller1.ButtonR2.pressing()&&inta3==false&&!(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing())) {
+    if(Controller1.ButtonRight.pressing()) {
         bwingl.set(!bwingl.value());
         
         inta3=true;
       }
-      else if(!Controller1.ButtonL2.pressing()&&!Controller1.ButtonR2.pressing()){
+      else if(!Controller1.ButtonRight.pressing()){
         inta3=false;
       }
     
@@ -759,10 +759,10 @@ void pre() {
     Brain.Screen.print("Offense");
   }
   if(select==4) {
-    Brain.Screen.print("skills");
+    Brain.Screen.print("offense awp");
   }
   if(select==5) {
-    Brain.Screen.print("skills driver");
+    Brain.Screen.print("skills");
   
   }
   
@@ -813,23 +813,13 @@ void autodefensewp(){
   bwingl.set(false);
   pidd(-1000,-80);
   pid(-90,400);
-  pidd(-800,-80);
+  pidd(-900,-80);
   
 }
 
 void autooffenseawp(){
-  intin();
-  pidd(200,0);
-  pidd(-1700,0);
-  pid(-35,500);
-  pidd(-700,-45);
-  bwingl.set(true);
-  pid(-90,600);
-  bwingl.set(false);
-  pid(-70,500);
-  pidd(-400,500);
-  pid(-90,500);
-  pidd(-1000,-90);
+  pidd(-5000,0,5000);
+  pidd(500,0);
 
 }
 
@@ -1004,8 +994,11 @@ void autonomousprogram() {
     //pidswingl(-45);
     //pidd(500,-45);
   }
-  if(select==4||select==5){
+  if(select==5){
     skills2();
+  }
+  if(select==4){
+    autooffenseawp();
   }
 }
 
