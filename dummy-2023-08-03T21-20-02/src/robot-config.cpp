@@ -10,11 +10,11 @@ brain  Brain;
 // VEXcode device constructors
 motor l1 = motor(PORT8, ratio6_1, true);
 motor l2 = motor(PORT9, ratio6_1, true);
-motor l3 = motor(PORT10, ratio6_1, true);
+motor l3 = motor(PORT12, ratio6_1, true);
 motor r1 = motor(PORT3, ratio6_1, false);
 motor r2 = motor(PORT4, ratio6_1, false);
 motor r3 = motor(PORT5, ratio6_1, false);
-inertial inert = inertial(PORT11);
+inertial inert = inertial(PORT15);
 
 
 controller Controller1 = controller(primary);
@@ -24,7 +24,7 @@ motor cata2 = motor(PORT16,ratio18_1);
 
 
 digital_out wingR = digital_out(Brain.ThreeWirePort.D);
-digital_out wingL = digital_out(Brain.ThreeWirePort.E);
+digital_out wingL = digital_out(Brain.ThreeWirePort.C);
 digital_out bwing = digital_out(Brain.ThreeWirePort.G);
 digital_out bwingl = digital_out(Brain.ThreeWirePort.H);
 digital_out endgame = digital_out(Brain.ThreeWirePort.C);
