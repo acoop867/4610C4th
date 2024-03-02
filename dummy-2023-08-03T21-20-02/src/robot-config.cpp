@@ -25,10 +25,10 @@ motor cata2 = motor(PORT16,ratio18_1);
 
 digital_out wingR = digital_out(Brain.ThreeWirePort.D);
 digital_out wingL = digital_out(Brain.ThreeWirePort.C);
-digital_out bwing = digital_out(Brain.ThreeWirePort.G);
-digital_out bwingl = digital_out(Brain.ThreeWirePort.H);
-digital_out endgame = digital_out(Brain.ThreeWirePort.C);
-digital_out lift = digital_out(Brain.ThreeWirePort.F);
+digital_out bwing = digital_out(Brain.ThreeWirePort.F);
+digital_out bwingl = digital_out(Brain.ThreeWirePort.G);
+digital_out pto = digital_out(Brain.ThreeWirePort.E);
+digital_out release = digital_out(Brain.ThreeWirePort.B);
 optical di= optical(PORT21);
 
 
