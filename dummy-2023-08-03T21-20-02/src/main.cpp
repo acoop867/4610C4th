@@ -202,9 +202,9 @@ void pidswingl(int ang) {
     l2.spin(forward,p*kp+d*kd,pct);
     l3.spin(forward,p*kp+d*kd,pct);
     sr(-p*.05);
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print(inert.rotation());
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(inert.rotation());
     wait(10,msec);
     t+=10;
   }
@@ -783,18 +783,10 @@ int wingin() {
 
 
 void autodefensewp(){
-  wingL.set(true);
-  
-  
-  wait(.5,sec);
-  wingL.set(false);
-  bwingl.set(true);
-  wait(.5,sec);
-  pid(-80,800);
-  bwingl.set(false);
-  pidd(-1000,-80);
-  pid(-90,400);
-  pidd(-900,-80);
+  bwing.set(true);
+  pid(-40,500);
+  bwing.set(false);
+  pidd(1800,-40);
   
 }
 
@@ -817,14 +809,14 @@ void autooffenseawp(){
   inout();
   wingR.set(true);
   pidd(1000,-270,800);
-  pidd(-400,-270);
-  pidd(800,-270,500);
   wingR.set(false);
+  intstop();
   pid(-270,400);
-  pidd(-200,-270);
+  pidd(-400,-270);
   pid(-360,500);
-  pidd(2500,-330,2000,30);
-
+  pidd(2500,-335,2000,30);
+  pid(-190,900);
+  inout();
 }
 
 void autooffenseelim(){
@@ -887,29 +879,58 @@ void skills(){
   pid(-128,600);
   wingL.set(true);
   wingR.set(true);
-  pidd(3800,-135);
+  pidd(3700,-135);
   wingL.set(false);
   wingR.set(false);
   pidd(-200,-135,400);
   pid(-225,600);
   pidd(1500,-160,1000,40);
   pid(-90,500);
-  pidd(1400,-90,800);
-  wingR.set(true);
+  pidd(1600,-90,800);
   
-  pid(-49,500);
-  pidd(3300,-45);
+  pid(-47,500);
+  wingR.set(true);
+  wingL.set(true);
+  pidd(3100,-45);
+  wingL.set(false);
   pid(0,500);
-  pidd(1000,45,800,50);
-  pidd(-200,45);
-  pid(135,700);
-  pidd(1400,135,800);
+  pidd(1900,45,900,60);
+  
+  wingR.set(false);
+  
+  pidd(-100,45);
+  pid(128,700);
+  pidd(1800,128,800);
   pid(45,700);
   wingL.set(true);
   wingR.set(true);
-  pidd(1000,-45,1000,30);
+  pidd(1600,-45,1000,40);
+  pidd(-600,-45);
+  pidd(2000,-45,600);
   wingL.set(false);
   wingR.set(false);
+  changeangle(800, -135);
+  pidd(-4000,-90,2200,30);
+  pidd(-1000,-135);
+  pid(-90,600);
+  wingL.set(true);
+  wingR.set(true);
+  pidd(2000,-45,1000,40);
+  pidd(-600,-45);
+  pidd(2000,-45,600);
+  wingL.set(false);
+  wingR.set(false);
+  pid(-135,600);
+  
+  pidd(-1000,-135,600);
+  pidd(-3000,-315,1600,50);
+  pidd(400,-315);
+  pid(-270,500);
+  pidd(1200,-450);
+  pid(-225,600);
+  pto.set(true);
+  pidd(2000,-225,1000);
+  pto.set(false);
 }
 
 void disrupt(){
@@ -1023,7 +1044,7 @@ void skills2(){
 void autonomousprogram() {
   
   if(select==1){
-    autooffenseawp();//skills();//autodefensewp();
+    skills();//autodefensewp();
   }
   if(select==2){
     disrupt();
