@@ -560,7 +560,7 @@ void driver() {
       r3.spin(forward,Controller1.Axis2.position(),pct);
     }
     
-    if(Controller1.ButtonLeft.pressing()){
+    if(Controller1.ButtonX.pressing()){
       
       
       end=true;
@@ -571,17 +571,20 @@ void driver() {
       
       
     }
-    if(!(Controller1.ButtonLeft.pressing())){
-      end=false;
-    }
-    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&toggle==1&&!end){
-    if(pto.value()){
-        pto.set(false);
-         
+    
+    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()&&!end){
+    
+        pto.set(true);
+        wingR.set(false);
+        wingL.set(false);
+        release.set(false);
+        bwingl.set(false);
+        bwing.set(false);
+        end=true;
         
         
           
-        }
+        
         
         
       }
@@ -602,7 +605,7 @@ void driver() {
       
     
     
-    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()&&inta==false&&!(Controller1.ButtonL2.pressing()&&Controller1.ButtonR2.pressing())) {
+    if(!end&&Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()&&inta==false&&!(Controller1.ButtonL2.pressing()&&Controller1.ButtonR2.pressing())) {
         bwing.set(!bwing.value());
         
         inta=true;
@@ -859,6 +862,14 @@ void autooffenseelim(){
   pidd(500,210);
 }
 
+int wingout(){
+  while(l1.position(degrees)<1500){
+    wait(10,msec);
+  }
+  wingR.set(true);
+  return(0);
+}
+
 void skills(){
   
   
@@ -871,10 +882,10 @@ void skills(){
   bwing.set(true);
   wait(.5,sec);
   bwing.set(false);
-  intin();
-  changeangle(1600, -30);
+  
+  thread l(wingout);
   pidd(2300,-45,2000,20);
-  intstop();
+  
   pidd(-400,-45,500);
   pid(-128,600);
   wingL.set(true);
@@ -885,13 +896,13 @@ void skills(){
   pidd(-200,-135,400);
   pid(-225,600);
   pidd(1500,-160,1000,40);
-  pid(-90,500);
-  pidd(1600,-90,800);
+  pid(-80,500);
+  pidd(1800,-90,800);
   
   pid(-47,500);
   wingR.set(true);
   wingL.set(true);
-  pidd(3100,-45);
+  pidd(2950,-45);
   wingL.set(false);
   pid(0,500);
   pidd(1900,45,900,60);
@@ -1044,7 +1055,7 @@ void skills2(){
 void autonomousprogram() {
   
   if(select==1){
-    skills();//autodefensewp();
+    autodefensewp();
   }
   if(select==2){
     disrupt();
