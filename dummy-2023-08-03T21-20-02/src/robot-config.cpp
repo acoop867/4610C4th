@@ -15,7 +15,7 @@ motor r1 = motor(PORT3, ratio6_1, false);
 motor r2 = motor(PORT4, ratio6_1, false);
 motor r3 = motor(PORT5, ratio6_1, false);
 inertial inert = inertial(PORT15);
-
+bumper selector = bumper(Brain.ThreeWirePort.A);
 
 controller Controller1 = controller(primary);
 motor Intake = motor(PORT20, ratio18_1, false);

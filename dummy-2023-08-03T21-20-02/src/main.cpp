@@ -436,18 +436,30 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
   sr(0);
 }
 competition Comp;
+int select=1;
 int catathing(){
+  bool skillsthing=false;
   while(true) {
-    if(Comp.isDriverControl()){
+    if(Comp.isDriverControl()&&(select!=5||skillsthing)){
     if(Controller1.ButtonL2.pressing()&&(!Controller1.ButtonR2.pressing()&&!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing())) {
-      cata.spin(forward,90,pct);
-      cata2.spin(forward,90,pct);
+      cata.spin(forward,95,pct);
+      cata2.spin(forward,95,pct);
     }
     else {
     cata.stop();
     cata2.stop();
     }
     }
+    else if(select==5&&!skillsthing){
+      if(Controller1.ButtonL2.pressing()){
+        while(Controller1.ButtonL2.pressing()){
+          wait(10,msec);
+        }
+        skillsthing=true;
+        bwing.set(false);
+      }
+    }
+    
     /*if(cata.torque()>.1) {
       cata.setPosition(0, deg);
       cata.spin(forward,100,pct);
@@ -471,9 +483,9 @@ int catathing(){
 void cataauto() {
   int times=0;
   int tim=0;
-  cata.spin(forward,90,pct);
-  cata2.spin(forward,90,pct);
-  while(times<44&&tim<30000){
+  cata.spin(forward,95,pct);
+  cata2.spin(forward,95,pct);
+  while(times<44&&tim<24000){
   if(di.hue()>=90) {
       times++;
       while(di.hue()>=90){
@@ -490,7 +502,7 @@ void cataauto() {
   cata2.stop();
 }
 
-int select=1;
+
 void driver_auto(){
   pidd(-600,0);
   pid(-61,1400);
@@ -533,7 +545,16 @@ void driver() {
   bool enddone=false;
   bool inta3=false;
   if(select==5){
-    driver_auto();
+    pidd(-2000,45,1000,50);
+  
+  pid(20,400);
+  pidd(790,20,700);
+  pid(-60,700);
+  cata.spin(forward,95,pct);
+  cata2.spin(forward,95,pct);
+  pidd(- 200,-60,800);
+  pid(-60,200);
+  bwing.set(true);
   }
   while(true) {
     
@@ -572,7 +593,7 @@ void driver() {
       
     }
     
-    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()&&!end){
+    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonL2.pressing()&&Controller1.ButtonR1.pressing()&&Controller1.ButtonR2.pressing()){
     
         pto.set(true);
         wingR.set(false);
@@ -642,7 +663,9 @@ void driver() {
     
 
     
-
+    if(Controller1.ButtonB.pressing()){
+      pto.set(false);
+    }
     
 
     if(Controller1.ButtonR2.pressing()&&!Controller1.ButtonR1.pressing()&&!Controller1.ButtonL2.pressing()&&!Controller1.ButtonL1.pressing()&&!toggle) {
@@ -721,9 +744,12 @@ void pre() {
 
   while(true){//!Comp.isAutonomous()) {
 
-  if(Controller1.ButtonUp.pressing()){
+  if(selector.pressing()){
     select++;
-    while(Controller1.ButtonUp.pressing()){
+    if(select>5){
+      select=1;
+    }
+    while(selector.pressing()){
       wait(.1,sec);
       Brain.Screen.clearScreen();
     }
@@ -740,7 +766,7 @@ void pre() {
     Brain.Screen.print("Defense Elims");
   }
   if(select == 3) {
-    Brain.Screen.print("Offense");
+    Brain.Screen.print("Offense Elims");
   }
   if(select==4) {
     Brain.Screen.print("offense awp");
@@ -793,73 +819,83 @@ void autodefensewp(){
   
 }
 
-void autooffenseawp(){
+void autooffenseawp1(){
   intin();
-  pidd(800,0);
+  pidd(400,0,500);
   intstop();
-  pidd(-1700,0);
-  pidswingl(-45);
+  changeangle(1000,-45);
+  pidd(-2150,0,2000,20);
   bwingl.set(true);
-  pidd(-500,-45);
-  pid(-70,600);
-  bwingl.set(false);
-  pid(-45,400);
-  pidd(-400,-45);
   pid(-90,500);
-  pidd(-1000,-90,700);
-  pidd(900,-90);
-  pid(-270,800);
+  bwingl.set(false);
+  pid(-45,500);
+  pidd(-1000,-90,800,40);
+  pidd(400,-90,500);
+  pid(90,700);
   inout();
   wingR.set(true);
-  pidd(1000,-270,800);
+  pidd(800,90,600);
+  pidd(-500,90);
+  pidd(1000,90,500);
   wingR.set(false);
-  intstop();
-  pid(-270,400);
-  pidd(-400,-270);
-  pid(-360,500);
-  pidd(2500,-335,2000,30);
-  pid(-190,900);
+  pidd(-600,90);
+  pid(-45,600);
+  pidd(1200,-45);
+  pid(0,600);
+  pidd(1300,0);
+}
+
+void autooffenseawp(){
+  pidd(-1000,0,600);
+  pidd(800,-10);
+  pid(100,600);
+  intin();
+  pidd(2300,100);
+  pid(160,700);
+  pidd(800,160);
+  pid(250,600);
+  wingL.set(true);
   inout();
+  pidd(5000,180,800);
+  pidd(-1200,180);
+  pid(110,800);
+  intin();
+  pidd(400,110,500);
+  inout();
+  pidd(5000,250);
 }
 
 void autooffenseelim(){
   intin();
-  wingR.set(true);
-  thread t(wingin);
-  pidd(3000,0,4000);
-  pid(120,600);
-  inout();
-  wingR.set(true);
-  pidd(1600,120,900);
-  wingR.set(false);
-
-  pidd(-400,120,700);
-  pid(265,700);
-  intin();
-  pidd(1500,270,1000);
-  pid(160,500);
-  pidd(1400,160,900);
-  pid(120,400);
-  inout();
-  wait(.4,sec);
-  pid(165,700);
-  pidd(700,175,900);
-  
-
-  pidswingl(260);
-  
+  pidd(400,0,600);
+  intstop();
+  changeangle(1000,-45);
+  pidd(-2150,0,2000,40);
   bwingl.set(true);
-  pidd(-500,260);
-  pid(240,500);
+  pid(-90,500);
   bwingl.set(false);
-  pid(260,400);
-  pidd(-400,260);
-  pid(240,400);
-  
+  pid(-45,500);
+  pidd(-1000,-90,800,40);
+  pidd(700,-90,500);
+  pid(90,700);
   inout();
-  
-  pidd(-10000,210,800);
-  pidd(500,210);
+  pidd(1500,90,700);
+  pidd(-1000,90);
+  pid(25,600);
+  intin();
+  pidd(2300,10);
+  pid(90,700);
+  pidd(800,110);
+  pid(180,600);
+  wingL.set(true);
+  inout();
+  pidd(5000,180,800);
+  pidd(-1200,180);
+  pid(20,800);
+  intin();
+  pidd(400,20,500);
+  inout();
+  pidd(5000,180);
 }
 
 int wingout(){
@@ -878,9 +914,12 @@ void skills(){
   pid(20,400);
   pidd(790,20,700);
   pid(-60,700);
+  cata.spin(forward,95,pct);
+  cata2.spin(forward,95,pct);
   pidd(- 200,-60,800);
+  pid(-60,200);
   bwing.set(true);
-  wait(.5,sec);
+  cataauto();
   bwing.set(false);
   
   thread l(wingout);
@@ -890,14 +929,14 @@ void skills(){
   pid(-128,600);
   wingL.set(true);
   wingR.set(true);
-  pidd(3700,-135);
+  pidd(3600,-135);
   wingL.set(false);
   wingR.set(false);
   pidd(-200,-135,400);
   pid(-225,600);
   pidd(1500,-160,1000,40);
-  pid(-80,500);
-  pidd(1800,-90,800);
+  pid(-90,500);
+  pidd(1600,-90,800);
   
   pid(-47,500);
   wingR.set(true);
@@ -950,20 +989,20 @@ void disrupt(){
   intin();
   pidd(2300,0);
   pidd(-200,0);
-  pid(80,600);
+  pid(70,600);
   wingL.set(true);
   inout();
   pidd(1000,80);
   wingL.set(false);
   pidd(-200,80);
-  pid(23,500);
+  pid(29,500);
   pidd(-2800,30);
   pid(80,600);
-  pidd(2000,80);
+  inout();
+  pidd(1600,80);
   
   pidd(-2000,110);
-  pid(56,500);
-  bwing.set(true);
+  
   // pid(50);
   // bwing.set(true);
 }
@@ -1055,7 +1094,7 @@ void skills2(){
 void autonomousprogram() {
   
   if(select==1){
-    autodefensewp();
+    disrupt();//autodefensewp();
   }
   if(select==2){
     disrupt();
@@ -1066,7 +1105,7 @@ void autonomousprogram() {
     //pidd(500,-45);
   }
   if(select==5){
-    skills2();
+    skills();
   }
   if(select==4){
     autooffenseawp();

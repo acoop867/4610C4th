@@ -10,7 +10,7 @@ extern motor r1;
 extern motor r2;
 extern motor r3;
 extern motor cata2;
-
+extern bumper selector;
 extern inertial inert;
 
 
